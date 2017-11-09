@@ -1,5 +1,6 @@
 package org.yinwang.pysonar.visitor;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yinwang.pysonar.*;
@@ -14,8 +15,8 @@ import static org.yinwang.pysonar.Binding.Kind.CLASS;
 public class TypeInferencer implements Visitor1<Type, State> {
 
 	static void bindMethodAttrs(@NotNull FunType cl) {
-		if (cl.table.parent != null) {
-			Type cls = cl.table.parent.type;
+		if (cl.table.getParent() != null) {
+			Type cls = cl.table.getParent().getType();
 			if (cls != null && cls instanceof ClassType) {
 				addReadOnlyAttr(cl, "im_class", cls, CLASS);
 				addReadOnlyAttr(cl, "__class__", cls, CLASS);
@@ -25,10 +26,11 @@ public class TypeInferencer implements Visitor1<Type, State> {
 		}
 	}
 
-	static void addReadOnlyAttr(@NotNull FunType fun,
-	                            String name,
-	                            @NotNull Type type,
-	                            Binding.Kind kind) {
+	static void addReadOnlyAttr(
+			@NotNull FunType fun,
+			String name,
+			@NotNull Type type,
+			Binding.Kind kind) {
 		Node loc = Builtins.newDataModelUrl("the-standard-type-hierarchy");
 		Binding b = new Binding(name, loc, type, kind);
 		fun.table.update(name, b);
@@ -36,6 +38,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 		b.markStatic();
 	}
 
+	@Contract(pure = true)
 	static boolean missingReturn(@NotNull Type toType) {
 		boolean hasNone = false;
 		boolean hasOther = false;
@@ -411,7 +414,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 		if (node.isLamba) {
 			return fun;
 		} else {
-			if (s.stateType == State.StateType.CLASS) {
+			if (s.getStateType() == State.StateType.CLASS) {
 				if ("__init__".equals(node.name.id)) {
 					funkind = Binding.Kind.CONSTRUCTOR;
 				} else {
@@ -421,7 +424,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 				funkind = Binding.Kind.FUNCTION;
 			}
 
-			Type outType = s.type;
+			Type outType = s.getType();
 			if (outType instanceof ClassType) {
 				fun.setCls((ClassType) outType);
 			}
@@ -613,7 +616,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 			Analyzer.self.putRef(node, b);
 			Analyzer.self.resolved.add(node);
 			Analyzer.self.unresolved.remove(node);
-			return State.makeUnion(b);
+			return State.Companion.makeUnion(b);
 		} else if (node.id.equals("True") || node.id.equals("False")) {
 			return Type.BOOL;
 		} else {
@@ -949,7 +952,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 			return t;
 		} else {
 			addRef(node, targetType, bs);
-			return State.makeUnion(bs);
+			return State.Companion.makeUnion(bs);
 		}
 	}
 
@@ -1007,8 +1010,8 @@ public class TypeInferencer implements Visitor1<Type, State> {
 
 		State funcTable = new State(func.env, State.StateType.FUNCTION);
 
-		if (func.table.parent != null) {
-			funcTable.setPath(func.table.parent.extendPath(func.func.name.id));
+		if (func.table.getParent() != null) {
+			funcTable.setPath(func.table.getParent().extendPath(func.func.name.id));
 		} else {
 			funcTable.setPath(func.func.name.id);
 		}
@@ -1218,10 +1221,10 @@ public class TypeInferencer implements Visitor1<Type, State> {
 	 */
 	public void bind(@NotNull State s, Node target, @NotNull Type rvalue) {
 		Binding.Kind kind;
-		if (s.stateType == State.StateType.FUNCTION) {
+		if (s.getStateType() == State.StateType.FUNCTION) {
 			kind = Binding.Kind.VARIABLE;
-		} else if (s.stateType == State.StateType.CLASS ||
-				s.stateType == State.StateType.INSTANCE) {
+		} else if (s.getStateType() == State.StateType.CLASS ||
+				s.getStateType() == State.StateType.INSTANCE) {
 			kind = Binding.Kind.ATTRIBUTE;
 		} else {
 			kind = Binding.Kind.SCOPE;

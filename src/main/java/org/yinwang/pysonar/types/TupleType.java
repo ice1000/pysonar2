@@ -16,7 +16,7 @@ public class TupleType extends Type {
 	public TupleType() {
 		this.eltTypes = new ArrayList<>();
 		table.addSuper(Analyzer.self.builtins.BaseTuple.table);
-		table.setPath(Analyzer.self.builtins.BaseTuple.table.path);
+		table.setPath(Analyzer.self.builtins.BaseTuple.table.getPath());
 	}
 
 

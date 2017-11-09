@@ -38,7 +38,7 @@ public class FunType extends Type {
 	public FunType(Type from, Type to) {
 		addMapping(from, to);
 		table.addSuper(Analyzer.self.builtins.BaseFunction.table);
-		table.setPath(Analyzer.self.builtins.BaseFunction.table.path);
+		table.setPath(Analyzer.self.builtins.BaseFunction.table.getPath());
 	}
 
 
@@ -96,7 +96,7 @@ public class FunType extends Type {
 	public boolean typeEquals(Object other) {
 		if (other instanceof FunType) {
 			FunType fo = (FunType) other;
-			return fo.table.path.equals(table.path) || this == other;
+			return fo.table.getPath().equals(table.getPath()) || this == other;
 		} else {
 			return false;
 		}

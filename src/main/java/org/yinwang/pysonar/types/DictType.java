@@ -12,7 +12,7 @@ public class DictType extends Type {
 		keyType = key0;
 		valueType = val0;
 		table.addSuper(Analyzer.self.builtins.BaseDict.table);
-		table.setPath(Analyzer.self.builtins.BaseDict.table.path);
+		table.setPath(Analyzer.self.builtins.BaseDict.table.getPath());
 	}
 
 	public void add(@NotNull Type key, @NotNull Type val) {

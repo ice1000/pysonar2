@@ -35,7 +35,7 @@ public class Binding implements Comparable<Object> {
 
 	public Binding(@NotNull String id, @NotNull Node node, @NotNull Type type, @NotNull Kind kind) {
 		this.name = id;
-		this.qname = type.table.path;
+		this.qname = type.table.getPath();
 		this.type = type;
 		this.kind = kind;
 		this.node = node;

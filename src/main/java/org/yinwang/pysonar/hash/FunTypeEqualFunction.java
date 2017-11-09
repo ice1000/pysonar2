@@ -10,7 +10,7 @@ public class FunTypeEqualFunction extends EqualFunction {
 			FunType xx = (FunType) x;
 			FunType yy = (FunType) y;
 			return xx == yy ||
-					xx.table.path.equals(yy.table.path);
+					xx.table.getPath().equals(yy.table.getPath());
 		} else {
 			return x.equals(y);
 		}
