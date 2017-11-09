@@ -1,4 +1,4 @@
-var highlighted = new Array();
+var highlighted = [];
 function highlight()
 {
     // clear existing highlights
@@ -8,7 +8,7 @@ function highlight()
             elm.style.backgroundColor = 'white';
         }
     }
-    highlighted = new Array();
+    highlighted = [];
     for (var i = 0; i < arguments.length; i++) {
         var elm = document.getElementById(arguments[i]);
         if (elm != null) {

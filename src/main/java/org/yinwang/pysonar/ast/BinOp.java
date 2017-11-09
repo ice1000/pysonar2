@@ -4,25 +4,25 @@ import org.jetbrains.annotations.NotNull;
 
 public class BinOp extends Node {
 
-    @NotNull
-    public Node left;
-    @NotNull
-    public Node right;
-    @NotNull
-    public Op op;
+	@NotNull
+	public Node left;
+	@NotNull
+	public Node right;
+	@NotNull
+	public Op op;
 
-    public BinOp(@NotNull Op op, @NotNull Node left, @NotNull Node right, String file, int start, int end) {
-        super(NodeType.BINOP, file, start, end);
-        this.left = left;
-        this.right = right;
-        this.op = op;
-        addChildren(left, right);
-    }
+	public BinOp(@NotNull Op op, @NotNull Node left, @NotNull Node right, String file, int start, int end) {
+		super(NodeType.BINOP, file, start, end);
+		this.left = left;
+		this.right = right;
+		this.op = op;
+		addChildren(left, right);
+	}
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "(" + left + " " + op + " " + right + ")";
-    }
+	@NotNull
+	@Override
+	public String toString() {
+		return "(" + left + " " + op + " " + right + ")";
+	}
 
 }

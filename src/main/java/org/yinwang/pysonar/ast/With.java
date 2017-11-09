@@ -6,24 +6,24 @@ import java.util.List;
 
 public class With extends Node {
 
-    @NotNull
-    public List<Withitem> items;
-    public Block body;
-    public boolean isAsync = false;
+	@NotNull
+	public List<Withitem> items;
+	public Block body;
+	public boolean isAsync = false;
 
-    public With(@NotNull List<Withitem> items, Block body, String file, boolean isAsync, int start, int end) {
-        super(NodeType.WITH, file, start, end);
-        this.items = items;
-        this.body = body;
-        this.isAsync = isAsync;
-        addChildren(items);
-        addChildren(body);
-    }
+	public With(@NotNull List<Withitem> items, Block body, String file, boolean isAsync, int start, int end) {
+		super(NodeType.WITH, file, start, end);
+		this.items = items;
+		this.body = body;
+		this.isAsync = isAsync;
+		addChildren(items);
+		addChildren(body);
+	}
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "<With:" + items + ":" + body + ">";
-    }
+	@NotNull
+	@Override
+	public String toString() {
+		return "<With:" + items + ":" + body + ">";
+	}
 
 }

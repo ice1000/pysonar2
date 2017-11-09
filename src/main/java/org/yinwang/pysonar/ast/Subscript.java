@@ -5,22 +5,22 @@ import org.jetbrains.annotations.Nullable;
 
 public class Subscript extends Node {
 
-    @NotNull
-    public Node value;
-    @Nullable
-    public Node slice;  // an NIndex or NSlice
+	@NotNull
+	public Node value;
+	@Nullable
+	public Node slice;  // an NIndex or NSlice
 
-    public Subscript(@NotNull Node value, @Nullable Node slice, String file, int start, int end) {
-        super(NodeType.SUBSCRIPT, file, start, end);
-        this.value = value;
-        this.slice = slice;
-        addChildren(value, slice);
-    }
+	public Subscript(@NotNull Node value, @Nullable Node slice, String file, int start, int end) {
+		super(NodeType.SUBSCRIPT, file, start, end);
+		this.value = value;
+		this.slice = slice;
+		addChildren(value, slice);
+	}
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "<Subscript:" + value + ":" + slice + ">";
-    }
+	@NotNull
+	@Override
+	public String toString() {
+		return "<Subscript:" + value + ":" + slice + ">";
+	}
 
 }

@@ -7,27 +7,27 @@ import org.jetbrains.annotations.NotNull;
  */
 public class Keyword extends Node {
 
-    public String arg;
-    @NotNull
-    public Node value;
+	public String arg;
+	@NotNull
+	public Node value;
 
-    public Keyword(String arg, @NotNull Node value, String file, int start, int end) {
-        super(NodeType.KEYWORD, file, start, end);
-        this.arg = arg;
-        this.value = value;
-        addChildren(value);
-    }
+	public Keyword(String arg, @NotNull Node value, String file, int start, int end) {
+		super(NodeType.KEYWORD, file, start, end);
+		this.arg = arg;
+		this.value = value;
+		addChildren(value);
+	}
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "(keyword:" + arg + ":" + value + ")";
-    }
+	@NotNull
+	@Override
+	public String toString() {
+		return "(keyword:" + arg + ":" + value + ")";
+	}
 
-    @NotNull
-    @Override
-    public String toDisplay() {
-        return arg;
-    }
+	@NotNull
+	@Override
+	public String toDisplay() {
+		return arg;
+	}
 
 }

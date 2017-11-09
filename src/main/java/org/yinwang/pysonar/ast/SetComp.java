@@ -6,21 +6,21 @@ import java.util.List;
 
 public class SetComp extends Node {
 
-    public Node elt;
-    public List<Comprehension> generators;
+	public Node elt;
+	public List<Comprehension> generators;
 
-    public SetComp(Node elt, List<Comprehension> generators, String file, int start, int end) {
-        super(NodeType.SETCOMP, file, start, end);
-        this.elt = elt;
-        this.generators = generators;
-        addChildren(elt);
-        addChildren(generators);
-    }
+	public SetComp(Node elt, List<Comprehension> generators, String file, int start, int end) {
+		super(NodeType.SETCOMP, file, start, end);
+		this.elt = elt;
+		this.generators = generators;
+		addChildren(elt);
+		addChildren(generators);
+	}
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "<NSetComp:" + start + ":" + elt + ">";
-    }
+	@NotNull
+	@Override
+	public String toString() {
+		return "<NSetComp:" + start + ":" + elt + ">";
+	}
 
 }

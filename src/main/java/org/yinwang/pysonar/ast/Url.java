@@ -8,16 +8,16 @@ import org.jetbrains.annotations.NotNull;
  */
 public class Url extends Node {
 
-    public String url;
+	public String url;
 
-    public Url(String url) {
-        this.url = url;
-    }
+	public Url(String url) {
+		this.url = url;
+	}
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "<Url:\"" + url + "\">";
-    }
+	@NotNull
+	@Override
+	public String toString() {
+		return "<Url:\"" + url + "\">";
+	}
 
 }

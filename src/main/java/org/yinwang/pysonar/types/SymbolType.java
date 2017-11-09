@@ -4,26 +4,26 @@ import org.jetbrains.annotations.NotNull;
 
 public class SymbolType extends Type {
 
-    public String name;
+	public String name;
 
 
-    public SymbolType(@NotNull String name) {
-        this.name = name;
-    }
+	public SymbolType(@NotNull String name) {
+		this.name = name;
+	}
 
 
-    @Override
-    public boolean typeEquals(Object other) {
-        if (other instanceof SymbolType) {
-            return this.name.equals(((SymbolType) other).name);
-        } else {
-            return false;
-        }
-    }
+	@Override
+	public boolean typeEquals(Object other) {
+		if (other instanceof SymbolType) {
+			return this.name.equals(((SymbolType) other).name);
+		} else {
+			return false;
+		}
+	}
 
 
-    @Override
-    protected String printType(CyclicTypeRecorder ctr) {
-        return ":" + name;
-    }
+	@Override
+	protected String printType(CyclicTypeRecorder ctr) {
+		return ":" + name;
+	}
 }

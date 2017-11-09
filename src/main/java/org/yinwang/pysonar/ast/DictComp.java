@@ -6,23 +6,23 @@ import java.util.List;
 
 public class DictComp extends Node {
 
-    public Node key;
-    public Node value;
-    public List<Comprehension> generators;
+	public Node key;
+	public Node value;
+	public List<Comprehension> generators;
 
-    public DictComp(Node key, Node value, List<Comprehension> generators, String file, int start, int end) {
-        super(NodeType.DICTCOMP, file, start, end);
-        this.key = key;
-        this.value = value;
-        this.generators = generators;
-        addChildren(key);
-        addChildren(generators);
-    }
+	public DictComp(Node key, Node value, List<Comprehension> generators, String file, int start, int end) {
+		super(NodeType.DICTCOMP, file, start, end);
+		this.key = key;
+		this.value = value;
+		this.generators = generators;
+		addChildren(key);
+		addChildren(generators);
+	}
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "<DictComp:" + start + ":" + key + ">";
-    }
+	@NotNull
+	@Override
+	public String toString() {
+		return "<DictComp:" + start + ":" + key + ">";
+	}
 
 }

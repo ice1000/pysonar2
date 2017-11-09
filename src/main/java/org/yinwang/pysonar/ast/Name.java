@@ -4,47 +4,47 @@ import org.jetbrains.annotations.NotNull;
 
 public class Name extends Node {
 
-    @NotNull
-    public final String id;  // identifier
-    public NameType type;
+	@NotNull
+	public final String id;  // identifier
+	public NameType type;
 
-    public Name(String id) {
-        // generated name
-        this(id, null, -1, -1);
-    }
+	public Name(String id) {
+		// generated name
+		this(id, null, -1, -1);
+	}
 
-    public Name(@NotNull String id, String file, int start, int end) {
-        super(NodeType.NAME, file, start, end);
-        this.id = id;
-        this.name = id;
-        this.type = NameType.LOCAL;
-    }
+	public Name(@NotNull String id, String file, int start, int end) {
+		super(NodeType.NAME, file, start, end);
+		this.id = id;
+		this.name = id;
+		this.type = NameType.LOCAL;
+	}
 
-    public Name(@NotNull String id, NameType type, String file, int start, int end) {
-        super(NodeType.NAME, file, start, end);
-        this.id = id;
-        this.type = type;
-    }
+	public Name(@NotNull String id, NameType type, String file, int start, int end) {
+		super(NodeType.NAME, file, start, end);
+		this.id = id;
+		this.type = type;
+	}
 
-    /**
-     * Returns {@code true} if this name node is the {@code attr} child
-     * (i.e. the attribute being accessed) of an {@link Attribute} node.
-     */
-    public boolean isAttribute() {
-        return parent instanceof Attribute
-               && ((Attribute) parent).attr == this;
-    }
+	/**
+	 * Returns {@code true} if this name node is the {@code attr} child
+	 * (i.e. the attribute being accessed) of an {@link Attribute} node.
+	 */
+	public boolean isAttribute() {
+		return parent instanceof Attribute
+				&& ((Attribute) parent).attr == this;
+	}
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "(" + id + ":" + start + ")";
-    }
+	@NotNull
+	@Override
+	public String toString() {
+		return "(" + id + ":" + start + ")";
+	}
 
-    @NotNull
-    @Override
-    public String toDisplay() {
-        return id;
-    }
+	@NotNull
+	@Override
+	public String toDisplay() {
+		return id;
+	}
 
 }

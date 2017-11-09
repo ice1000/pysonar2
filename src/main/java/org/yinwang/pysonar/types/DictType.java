@@ -5,53 +5,53 @@ import org.yinwang.pysonar.Analyzer;
 
 public class DictType extends Type {
 
-    public Type keyType;
-    public Type valueType;
+	public Type keyType;
+	public Type valueType;
 
-    public DictType(Type key0, Type val0) {
-        keyType = key0;
-        valueType = val0;
-        table.addSuper(Analyzer.self.builtins.BaseDict.table);
-        table.setPath(Analyzer.self.builtins.BaseDict.table.path);
-    }
+	public DictType(Type key0, Type val0) {
+		keyType = key0;
+		valueType = val0;
+		table.addSuper(Analyzer.self.builtins.BaseDict.table);
+		table.setPath(Analyzer.self.builtins.BaseDict.table.path);
+	}
 
-    public void add(@NotNull Type key, @NotNull Type val) {
-        keyType = UnionType.union(keyType, key);
-        valueType = UnionType.union(valueType, val);
-    }
+	public void add(@NotNull Type key, @NotNull Type val) {
+		keyType = UnionType.union(keyType, key);
+		valueType = UnionType.union(valueType, val);
+	}
 
-    @NotNull
-    public TupleType toTupleType(int n) {
-        TupleType ret = new TupleType();
-        for (int i = 0; i < n; i++) {
-            ret.add(keyType);
-        }
-        return ret;
-    }
+	@NotNull
+	public TupleType toTupleType(int n) {
+		TupleType ret = new TupleType();
+		for (int i = 0; i < n; i++) {
+			ret.add(keyType);
+		}
+		return ret;
+	}
 
-    @Override
-    public boolean typeEquals(Object other) {
-        if (typeStack.contains(this, other)) {
-            return true;
-        } else if (other instanceof DictType) {
-            typeStack.push(this, other);
-            DictType co = (DictType) other;
-            boolean result = co.keyType.typeEquals(keyType) &&
-                             co.valueType.typeEquals(valueType);
-            typeStack.pop(this, other);
-            return result;
-        } else {
-            return false;
-        }
-    }
+	@Override
+	public boolean typeEquals(Object other) {
+		if (typeStack.contains(this, other)) {
+			return true;
+		} else if (other instanceof DictType) {
+			typeStack.push(this, other);
+			DictType co = (DictType) other;
+			boolean result = co.keyType.typeEquals(keyType) &&
+					co.valueType.typeEquals(valueType);
+			typeStack.pop(this, other);
+			return result;
+		} else {
+			return false;
+		}
+	}
 
-    @Override
-    public int hashCode() {
-        return "DictType".hashCode();
-    }
+	@Override
+	public int hashCode() {
+		return "DictType".hashCode();
+	}
 
-    @Override
-    protected String printType(@NotNull CyclicTypeRecorder ctr) {
+	@Override
+	protected String printType(@NotNull CyclicTypeRecorder ctr) {
 //        StringBuilder sb = new StringBuilder();
 //
 //        Integer num = ctr.visit(this);
@@ -68,7 +68,7 @@ public class DictType extends Type {
 //        }
 //
 //        return sb.toString();
-        return "dict";
-    }
+		return "dict";
+	}
 
 }

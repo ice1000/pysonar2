@@ -6,85 +6,84 @@ import java.util.List;
 
 public class FunctionDef extends Node {
 
-    public Name name;
-    public List<Node> args;
-    public List<Node> defaults;
-    public Name vararg;  // *args
-    public Name kwarg;   // **kwarg
-    public List<Node> afterRest = null;   // after rest arg of Ruby
-    public Node body;
-    public boolean called = false;
-    public boolean isLamba = false;
-    public boolean isAsync = false;
+	private static int lambdaCounter = 0;
+	public Name name;
+	public List<Node> args;
+	public List<Node> defaults;
+	public Name vararg;  // *args
+	public Name kwarg;   // **kwarg
+	public List<Node> afterRest = null;   // after rest arg of Ruby
+	public Node body;
+	public boolean called = false;
+	public boolean isLamba = false;
+	public boolean isAsync = false;
 
-    public FunctionDef(Name name, List<Node> args, Node body, List<Node> defaults,
-        Name vararg, Name kwarg, String file, boolean isAsync, int start, int end) {
-        super(NodeType.FUNCTIONDEF, file, start, end);
-        if (name != null) {
-            this.name = name;
-        } else {
-            isLamba = true;
-            String fn = genLambdaName();
-            this.name = new Name(fn, file, start, start + "lambda".length());
-            addChildren(this.name);
-        }
+	public FunctionDef(Name name, List<Node> args, Node body, List<Node> defaults,
+	                   Name vararg, Name kwarg, String file, boolean isAsync, int start, int end) {
+		super(NodeType.FUNCTIONDEF, file, start, end);
+		if (name != null) {
+			this.name = name;
+		} else {
+			isLamba = true;
+			String fn = genLambdaName();
+			this.name = new Name(fn, file, start, start + "lambda".length());
+			addChildren(this.name);
+		}
 
-        this.args = args;
-        this.body = body;
-        this.defaults = defaults;
-        this.vararg = vararg;
-        this.kwarg = kwarg;
-        this.isAsync = isAsync;
-        addChildren(name);
-        addChildren(args);
-        addChildren(defaults);
-        addChildren(vararg, kwarg, this.body);
-    }
+		this.args = args;
+		this.body = body;
+		this.defaults = defaults;
+		this.vararg = vararg;
+		this.kwarg = kwarg;
+		this.isAsync = isAsync;
+		addChildren(name);
+		addChildren(args);
+		addChildren(defaults);
+		addChildren(vararg, kwarg, this.body);
+	}
 
-    public String getArgumentExpr() {
-        StringBuilder argExpr = new StringBuilder();
-        argExpr.append("(");
-        boolean first = true;
+	@NotNull
+	public static String genLambdaName() {
+		lambdaCounter = lambdaCounter + 1;
+		return "lambda%" + lambdaCounter;
+	}
 
-        for (Node n : args) {
-            if (!first) {
-                argExpr.append(", ");
-            }
-            first = false;
-            argExpr.append(n.toDisplay());
-        }
+	public String getArgumentExpr() {
+		StringBuilder argExpr = new StringBuilder();
+		argExpr.append("(");
+		boolean first = true;
 
-        if (vararg != null) {
-            if (!first) {
-                argExpr.append(", ");
-            }
-            first = false;
-            argExpr.append("*" + vararg.toDisplay());
-        }
+		for (Node n : args) {
+			if (!first) {
+				argExpr.append(", ");
+			}
+			first = false;
+			argExpr.append(n.toDisplay());
+		}
 
-        if (kwarg != null) {
-            if (!first) {
-                argExpr.append(", ");
-            }
-            argExpr.append("**" + kwarg.toDisplay());
-        }
+		if (vararg != null) {
+			if (!first) {
+				argExpr.append(", ");
+			}
+			first = false;
+			argExpr.append("*" + vararg.toDisplay());
+		}
 
-        argExpr.append(")");
-        return argExpr.toString();
-    }
+		if (kwarg != null) {
+			if (!first) {
+				argExpr.append(", ");
+			}
+			argExpr.append("**" + kwarg.toDisplay());
+		}
 
-    private static int lambdaCounter = 0;
+		argExpr.append(")");
+		return argExpr.toString();
+	}
 
-    @NotNull
-    public static String genLambdaName() {
-        lambdaCounter = lambdaCounter + 1;
-        return "lambda%" + lambdaCounter;
-    }
-
-    @NotNull
-    @Override
-    public String toString() {
-        return "(func:" + start + ":" + name + ")";
-    }
+	@NotNull
+	@Override
+	public String toString() {
+		return "(func:" + start + ":" + name + ")";
+	}
 
 }

@@ -1,9 +1,9 @@
 package org.yinwang.pysonar.types;
 
 import org.jetbrains.annotations.NotNull;
+import org.yinwang.pysonar.$;
 import org.yinwang.pysonar.State;
 import org.yinwang.pysonar.TypeStack;
-import org.yinwang.pysonar.$;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,119 +13,110 @@ import java.util.Set;
 
 public abstract class Type {
 
-    @NotNull
-    public State table = new State(null, State.StateType.SCOPE);
-    public String file = null;
-    @NotNull
-    protected static TypeStack typeStack = new TypeStack();
+	public static InstanceType UNKNOWN = new InstanceType(new ClassType("?", null, null));
+	public static InstanceType CONT = new InstanceType(new ClassType("None", null, null));
+	public static InstanceType NONE = new InstanceType(new ClassType("None", null, null));
+	public static StrType STR = new StrType(null);
+	public static IntType INT = new IntType();
+	public static FloatType FLOAT = new FloatType();
+	public static ComplexType COMPLEX = new ComplexType();
+	public static BoolType BOOL = new BoolType(BoolType.Value.Undecided);
+	@NotNull
+	protected static TypeStack typeStack = new TypeStack();
+	@NotNull
+	public State table = new State(null, State.StateType.SCOPE);
+	public String file = null;
 
 
-    public Type() {
-    }
+	public Type() {
+	}
 
-    @Override
-    public boolean equals(Object other) {
-        return typeEquals(other);
-    }
+	@Override
+	public boolean equals(Object other) {
+		return typeEquals(other);
+	}
 
-    public abstract boolean typeEquals(Object other);
+	public abstract boolean typeEquals(Object other);
 
-    public void setTable(@NotNull State table) {
-        this.table = table;
-    }
+	public void setTable(@NotNull State table) {
+		this.table = table;
+	}
 
+	public void setFile(String file) {
+		this.file = file;
+	}
 
-    public void setFile(String file) {
-        this.file = file;
-    }
+	public boolean isNumType() {
+		return this instanceof IntType || this instanceof FloatType;
+	}
 
+	public boolean isUnknownType() {
+		return this == Type.UNKNOWN;
+	}
 
-    public boolean isNumType() {
-        return this instanceof IntType || this instanceof FloatType;
-    }
+	@NotNull
+	public ModuleType asModuleType() {
+		if (this instanceof UnionType) {
+			for (Type t : ((UnionType) this).types) {
+				if (t instanceof ModuleType) {
+					return t.asModuleType();
+				}
+			}
+			$.die("Not containing a ModuleType");
+			// can't get here, just to make the @NotNull annotation happy
+			return new ModuleType(null, null, null);
+		} else if (this instanceof ModuleType) {
+			return (ModuleType) this;
+		} else {
+			$.die("Not a ModuleType");
+			// can't get here, just to make the @NotNull annotation happy
+			return new ModuleType(null, null, null);
+		}
+	}
 
+	protected abstract String printType(CyclicTypeRecorder ctr);
 
-    public boolean isUnknownType() {
-        return this == Type.UNKNOWN;
-    }
+	@NotNull
+	@Override
+	public String toString() {
+		return printType(new CyclicTypeRecorder());
+	}
 
-
-    @NotNull
-    public ModuleType asModuleType() {
-        if (this instanceof UnionType) {
-            for (Type t : ((UnionType) this).types) {
-                if (t instanceof ModuleType) {
-                    return t.asModuleType();
-                }
-            }
-            $.die("Not containing a ModuleType");
-            // can't get here, just to make the @NotNull annotation happy
-            return new ModuleType(null, null, null);
-        } else if (this instanceof ModuleType) {
-            return (ModuleType) this;
-        } else {
-            $.die("Not a ModuleType");
-            // can't get here, just to make the @NotNull annotation happy
-            return new ModuleType(null, null, null);
-        }
-    }
-
-
-    /**
-     * Internal class to support printing in the presence of type-graph cycles.
-     */
-    protected class CyclicTypeRecorder {
-        int count = 0;
-        @NotNull
-        private Map<Type, Integer> elements = new HashMap<>();
-        @NotNull
-        private Set<Type> used = new HashSet<>();
-
-
-        public Integer push(Type t) {
-            count += 1;
-            elements.put(t, count);
-            return count;
-        }
+	/**
+	 * Internal class to support printing in the presence of type-graph cycles.
+	 */
+	protected class CyclicTypeRecorder {
+		int count = 0;
+		@NotNull
+		private Map<Type, Integer> elements = new HashMap<>();
+		@NotNull
+		private Set<Type> used = new HashSet<>();
 
 
-        public void pop(Type t) {
-            elements.remove(t);
-            used.remove(t);
-        }
+		public Integer push(Type t) {
+			count += 1;
+			elements.put(t, count);
+			return count;
+		}
 
 
-        public Integer visit(Type t) {
-            Integer i = elements.get(t);
-            if (i != null) {
-                used.add(t);
-            }
-            return i;
-        }
+		public void pop(Type t) {
+			elements.remove(t);
+			used.remove(t);
+		}
 
 
-        public boolean isUsed(Type t) {
-            return used.contains(t);
-        }
-    }
+		public Integer visit(Type t) {
+			Integer i = elements.get(t);
+			if (i != null) {
+				used.add(t);
+			}
+			return i;
+		}
 
 
-    protected abstract String printType(CyclicTypeRecorder ctr);
-
-
-    @NotNull
-    @Override
-    public String toString() {
-        return printType(new CyclicTypeRecorder());
-    }
-
-
-    public static InstanceType UNKNOWN = new InstanceType(new ClassType("?", null, null));
-    public static InstanceType CONT = new InstanceType(new ClassType("None", null, null));
-    public static InstanceType NONE = new InstanceType(new ClassType("None", null, null));
-    public static StrType STR = new StrType(null);
-    public static IntType INT = new IntType();
-    public static FloatType FLOAT = new FloatType();
-    public static ComplexType COMPLEX = new ComplexType();
-    public static BoolType BOOL = new BoolType(BoolType.Value.Undecided);
+		public boolean isUsed(Type t) {
+			return used.contains(t);
+		}
+	}
 }

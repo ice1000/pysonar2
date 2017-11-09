@@ -6,26 +6,26 @@ import java.util.List;
 
 public class Try extends Node {
 
-    public List<Handler> handlers;
-    public Block body;
-    public Block orelse;
-    public Block finalbody;
+	public List<Handler> handlers;
+	public Block body;
+	public Block orelse;
+	public Block finalbody;
 
-    public Try(List<Handler> handlers, Block body, Block orelse, Block finalbody,
-        String file, int start, int end) {
-        super(NodeType.TRY, file, start, end);
-        this.handlers = handlers;
-        this.body = body;
-        this.orelse = orelse;
-        this.finalbody = finalbody;
-        addChildren(handlers);
-        addChildren(body, orelse);
-    }
+	public Try(List<Handler> handlers, Block body, Block orelse, Block finalbody,
+	           String file, int start, int end) {
+		super(NodeType.TRY, file, start, end);
+		this.handlers = handlers;
+		this.body = body;
+		this.orelse = orelse;
+		this.finalbody = finalbody;
+		addChildren(handlers);
+		addChildren(body, orelse);
+	}
 
-    @NotNull
-    @Override
-    public String toString() {
-        return "<Try:" + handlers + ":" + body + ":" + orelse + ">";
-    }
+	@NotNull
+	@Override
+	public String toString() {
+		return "<Try:" + handlers + ":" + body + ":" + orelse + ">";
+	}
 
 }

@@ -242,12 +242,11 @@ fun joinWithSep(ls: Collection<String>, sep: String, start: String?, end: String
 	return sb.toString()
 }
 
-
 fun msgln(m: String) {
 	if (Analyzer.self != null && !Analyzer.self.hasOption("quiet")) println(m)
 }
 
-fun msg(m: String) {
+fun msg_(m: String) {
 	if (Analyzer.self != null && !Analyzer.self.hasOption("quiet")) print(m)
 }
 
