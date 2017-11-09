@@ -1,4 +1,4 @@
-### PySonar2 - a type inferencer and indexer for Python
+### PySonar2.kt - a type inferencer and indexer for Python
 
 PySonar2 is a type inferencer and indexer for Python, which performs
 sophisticated interprocedural analysis to infer types. It is one of the
@@ -17,13 +17,11 @@ To understand its properties, please refer to my blog post:
 <img src="http://www.yinwang.org/images/pysonar2.gif" width="70%">
 </a>
 
-
-
 #### How to build
 
-    mvn package
-
-
+```shell
+$ ./gradlew build
+```
 
 #### How to use
 
@@ -35,11 +33,12 @@ reasonably nice demo program has been built.
 You can build a simple "code-browser" of the Python 2.7 standard library with
 the following command line:
 
-    java -jar target/pysonar-<version>.jar /usr/lib/python2.7 ./html
+```shell
+$ java -jar target/pysonar-<version>.jar /usr/lib/python2.7 ./html
+```
 
 This will take a few minutes. You should find some interactive HTML files inside
 the _html_ directory after this process.
-
 
 
 #### System requirements
@@ -47,9 +46,7 @@ the _html_ directory after this process.
 * Python 2.7.x
 * Python 3.x if you have Python3 files
 * Java 8
-* maven
-
-
+* gradle
 
 ##### Environment variables
 
@@ -62,22 +59,20 @@ links.
 libraries. It is important to point it to the correct Python library, for
 example
 
-    export PYTHONPATH=/usr/lib/python2.7
+```shell
+$ export PYTHONPATH=/usr/lib/python2.7
+```
 
 If this is not set up correctly, you may find suboptimal results.
-
-
 
 ##### Memory usage
 
 PySonar2 doesn't need much memory to do analysis compared to other static
 analysis tool of its class. 1.5Gb is probably enough for analyzing a medium
 sized project such as Python's standard library or Django. But for generating
-the HTML files, you may need quite some memory (~2.5Gb for Python 2.7 standard
+the HTML files, you may need quite some memory (\~2.5Gb for Python 2.7 standard
 lib). This is due to the highlighting code is putting all code and their HTML
 tags into the memory.
-
-
 
 #### License (BSD Style)
 
