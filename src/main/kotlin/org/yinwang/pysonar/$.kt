@@ -246,7 +246,7 @@ fun msgln(m: String) {
 	if (Analyzer.self != null && !Analyzer.self.hasOption("quiet")) println(m)
 }
 
-fun msg_(m: String) {
+fun msg(m: String) {
 	if (Analyzer.self != null && !Analyzer.self.hasOption("quiet")) print(m)
 }
 

@@ -39,9 +39,9 @@ public class Progress {
         long elapsed = System.currentTimeMillis() - lastTickTime;
 
         if (elapsed > 500 || count == total) {
-            $.msg_("\r");
+            $.msg("\r");
             int dlen = (int) Math.ceil(Math.log10((double) total));
-            $.msg_($.percent(count, total) + " (" +
+            $.msg($.percent(count, total) + " (" +
                     $.formatNumber(count, dlen) +
                     " of " + $.formatNumber(total, dlen) + ")");
 
@@ -53,7 +53,7 @@ public class Progress {
             }
 
             lastRate = rate;
-            $.msg_("   SPEED: " + $.formatNumber(rate, MAX_SPEED_DIGITS) + "/s");
+            $.msg("   SPEED: " + $.formatNumber(rate, MAX_SPEED_DIGITS) + "/s");
 
             long totalElapsed = System.currentTimeMillis() - startTime;
             int avgRate;
@@ -65,15 +65,15 @@ public class Progress {
             }
             avgRate = avgRate == 0 ? 1 : avgRate;
 
-            $.msg_("   AVG SPEED: " + $.formatNumber(avgRate, MAX_SPEED_DIGITS) + "/s");
+            $.msg("   AVG SPEED: " + $.formatNumber(avgRate, MAX_SPEED_DIGITS) + "/s");
 
             long remain = total - count;
             long remainTime = remain / avgRate * 1000;
-            $.msg_("   ETA: " + $.formatTime(remainTime));
+            $.msg("   ETA: " + $.formatTime(remainTime));
 
-            $.msg_("   PARSE ERRS: " + Analyzer.self.failedToParse.size());
+            $.msg("   PARSE ERRS: " + Analyzer.self.failedToParse.size());
 
-            $.msg_("       ");      // overflow area
+            $.msg("       ");      // overflow area
 
             lastTickTime = System.currentTimeMillis();
             lastAvgRate = avgRate;
