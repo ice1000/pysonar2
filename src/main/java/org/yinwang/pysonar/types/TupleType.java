@@ -15,8 +15,8 @@ public class TupleType extends Type {
 
 	public TupleType() {
 		this.eltTypes = new ArrayList<>();
-		getTable().addSuper(Analyzer.self.builtins.BaseTuple.getTable());
-		getTable().setPath(Analyzer.self.builtins.BaseTuple.getTable().getPath());
+		getTable().addSuper(Analyzer.self.builtins.getBaseTuple().getTable());
+		getTable().setPath(Analyzer.self.builtins.getBaseTuple().getTable().getPath());
 	}
 
 
@@ -72,21 +72,21 @@ public class TupleType extends Type {
 
 	@Override
 	public boolean typeEquals(Object other) {
-		if (Companion.getTypeStack().contains(this, other)) {
+		if (typeStack.contains(this, other)) {
 			return true;
 		} else if (other instanceof TupleType) {
 			List<Type> types1 = eltTypes;
 			List<Type> types2 = ((TupleType) other).eltTypes;
 
 			if (types1.size() == types2.size()) {
-				Companion.getTypeStack().push(this, other);
+				typeStack.push(this, other);
 				for (int i = 0; i < types1.size(); i++) {
 					if (!types1.get(i).typeEquals(types2.get(i))) {
-						Companion.getTypeStack().pop(this, other);
+						typeStack.pop(this, other);
 						return false;
 					}
 				}
-				Companion.getTypeStack().pop(this, other);
+				typeStack.pop(this, other);
 				return true;
 			} else {
 				return false;

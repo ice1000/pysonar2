@@ -20,7 +20,7 @@ class DictType(var keyType: Type, var valueType: Type) : Type() {
 		return ret
 	}
 
-	override fun typeEquals(other: Any) = when {
+	override fun typeEquals(other: Any?) = when {
 		Type.typeStack.contains(this, other) -> true
 		other is DictType -> {
 			Type.typeStack.push(this, other)

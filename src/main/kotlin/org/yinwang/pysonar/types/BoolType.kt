@@ -21,7 +21,7 @@ class BoolType : Type {
 
 	fun swap(): BoolType = BoolType(s2, s1)
 
-	override fun typeEquals(other: Any): Boolean = other is BoolType
+	override fun typeEquals(other: Any?): Boolean = other is BoolType
 
 	override fun printType(ctr: Type.CyclicTypeRecorder) = if (Analyzer.self.hasOption("debug")) "bool($value)" else "bool"
 

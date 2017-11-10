@@ -183,7 +183,7 @@ public class Analyzer {
 		if (t == null) {
 			return null;
 		} else if (t instanceof UnionType) {
-			for (Type tt : ((UnionType) t).types) {
+			for (Type tt : ((UnionType) t).getTypes()) {
 				if (tt instanceof ModuleType) {
 					return (ModuleType) tt;
 				}
@@ -400,7 +400,7 @@ public class Analyzer {
 		Type mt = getBuiltinModule(qname);
 		if (mt != null) {
 			state.insert(name.get(0).id,
-					new Url(Builtins.LIBRARY_URL + mt.getTable().getPath() + ".html"),
+					new Url(Builtins.Companion.getLIBRARY_URL() + mt.getTable().getPath() + ".html"),
 					mt, Binding.Kind.SCOPE);
 			return mt;
 		}

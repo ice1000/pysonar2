@@ -11,6 +11,6 @@ class TypeStack {
 		stack.removeAt(stack.size - 1)
 	}
 
-	fun contains(first: Any, second: Any): Boolean =
+	fun contains(first: Any?, second: Any?): Boolean =
 			stack.any { (a, b) -> a == first && b == second || a == second && b == first }
 }

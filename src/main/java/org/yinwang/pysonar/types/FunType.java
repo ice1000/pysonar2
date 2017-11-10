@@ -37,8 +37,8 @@ public class FunType extends Type {
 
 	public FunType(Type from, Type to) {
 		addMapping(from, to);
-		getTable().addSuper(Analyzer.self.builtins.BaseFunction.getTable());
-		getTable().setPath(Analyzer.self.builtins.BaseFunction.getTable().getPath());
+		getTable().addSuper(Analyzer.self.builtins.getBaseFunction().getTable());
+		getTable().setPath(Analyzer.self.builtins.getBaseFunction().getTable().getPath());
 	}
 
 
@@ -72,7 +72,7 @@ public class FunType extends Type {
 		if (!arrows.isEmpty()) {
 			return arrows.values().iterator().next();
 		} else {
-			return Type.Companion.getUNKNOWN();
+			return Type.UNKNOWN;
 		}
 	}
 
@@ -115,11 +115,11 @@ public class FunType extends Type {
 
 
 	private boolean subsumedInner(Type type1, Type type2) {
-		if (Companion.getTypeStack().contains(type1, type2)) {
+		if (typeStack.contains(type1, type2)) {
 			return true;
 		}
 
-		if (type1.isUnknownType() || type1 == Type.Companion.getNONE() || type1.equals(type2)) {
+		if (type1.isUnknownType() || type1 == Type.NONE || type1.equals(type2)) {
 			return true;
 		}
 
@@ -189,11 +189,8 @@ public class FunType extends Type {
 
 
 	@Override
-	protected String printType(@NotNull CyclicTypeRecorder ctr) {
-
-		if (arrows.isEmpty()) {
-			return "? -> ?";
-		}
+	public String printType(@NotNull CyclicTypeRecorder ctr) {
+		if (arrows.isEmpty()) return "? -> ?";
 
 		StringBuilder sb = new StringBuilder();
 

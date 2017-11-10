@@ -100,7 +100,7 @@ public class Binding implements Comparable<Object> {
 	// merge one more type into the type
 	// used by stateful assignments which we can't track down the control flow
 	public void addType(Type t) {
-		type = UnionType.union(type, t);
+		type = UnionType.Companion.union(type, t);
 	}
 
 	public void setType(Type type) {

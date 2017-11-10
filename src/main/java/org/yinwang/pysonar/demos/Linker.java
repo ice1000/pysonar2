@@ -91,7 +91,7 @@ class Linker {
 
 		List<Type> types = bindings.stream().map(b -> b.type).collect(Collectors.toList());
 		Style style = new Style(Style.Type.ANCHOR, first.start, first.end);
-		style.message = UnionType.union(types).toString();
+		style.message = UnionType.Companion.union(types).toString();
 		style.url = first.qname;
 		style.id = qname;
 		addFileStyle(first.getFile(), style);
@@ -133,7 +133,7 @@ class Linker {
 			link.id = qname;
 
 			List<Type> types = bindings.stream().map(b -> b.type).collect(Collectors.toList());
-			link.message = UnionType.union(types).toString();
+			link.message = UnionType.Companion.union(types).toString();
 
 			// Currently jump to the first binding only. Should change to have a
 			// hover menu or something later.

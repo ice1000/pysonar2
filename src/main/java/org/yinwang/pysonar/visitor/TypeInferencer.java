@@ -31,7 +31,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 			String name,
 			@NotNull Type type,
 			Binding.Kind kind) {
-		Node loc = Builtins.newDataModelUrl("the-standard-type-hierarchy");
+		Node loc = Builtins.Companion.newDataModelUrl("the-standard-type-hierarchy");
 		Binding b = new Binding(name, loc, type, kind);
 		fun.getTable().update(name, b);
 		b.markSynthetic();
@@ -44,7 +44,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 		boolean hasOther = false;
 
 		if (toType instanceof UnionType) {
-			for (Type t : ((UnionType) toType).types) {
+			for (Type t : ((UnionType) toType).getTypes()) {
 				if (t == Type.NONE || t == Type.CONT) {
 					hasNone = true;
 				} else {
@@ -115,10 +115,10 @@ public class TypeInferencer implements Visitor1<Type, State> {
 	public Type visit(Attribute node, State s) {
 		Type targetType = visit(node.target, s);
 		if (targetType instanceof UnionType) {
-			Set<Type> types = ((UnionType) targetType).types;
+			Set<Type> types = ((UnionType) targetType).getTypes();
 			Type retType = Type.UNKNOWN;
 			for (Type tt : types) {
-				retType = UnionType.union(retType, getAttrType(node, tt));
+				retType = UnionType.Companion.union(retType, getAttrType(node, tt));
 			}
 			return retType;
 		} else {
@@ -205,10 +205,10 @@ public class TypeInferencer implements Visitor1<Type, State> {
 		for (Node n : node.seq) {
 			Type t = visit(n, s);
 			if (!returned) {
-				retType = UnionType.union(retType, t);
-				if (!UnionType.contains(t, Type.CONT)) {
+				retType = UnionType.Companion.union(retType, t);
+				if (!UnionType.Companion.contains(t, Type.CONT)) {
 					returned = true;
-					retType = UnionType.remove(retType, Type.CONT);
+					retType = UnionType.Companion.remove(retType, Type.CONT);
 				}
 			}
 		}
@@ -245,11 +245,11 @@ public class TypeInferencer implements Visitor1<Type, State> {
 		Type star = node.starargs == null ? null : visit(node.starargs, s);
 
 		if (fun instanceof UnionType) {
-			Set<Type> types = ((UnionType) fun).types;
+			Set<Type> types = ((UnionType) fun).getTypes();
 			Type retType = Type.UNKNOWN;
 			for (Type ft : types) {
 				Type t = resolveCall(node, ft, pos, hash, kw, star);
-				retType = UnionType.union(retType, t);
+				retType = UnionType.Companion.union(retType, t);
 			}
 			return retType;
 		} else {
@@ -267,7 +267,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 			if (baseType instanceof ClassType) {
 				classType.addSuper(baseType);
 			} else if (baseType instanceof UnionType) {
-				for (Type parent : ((UnionType) baseType).types) {
+				for (Type parent : ((UnionType) baseType).getTypes()) {
 					classType.addSuper(parent);
 				}
 			} else {
@@ -395,7 +395,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 			ret = visit(node.body, s);
 		}
 		if (node.orelse != null) {
-			ret = UnionType.union(ret, visit(node.orelse, s));
+			ret = UnionType.Companion.union(ret, visit(node.orelse, s));
 		}
 		return ret;
 	}
@@ -486,8 +486,8 @@ public class TypeInferencer implements Visitor1<Type, State> {
 			type2 = Type.CONT;
 		}
 
-		boolean cont1 = UnionType.contains(type1, Type.CONT);
-		boolean cont2 = UnionType.contains(type2, Type.CONT);
+		boolean cont1 = UnionType.Companion.contains(type1, Type.CONT);
+		boolean cont2 = UnionType.Companion.contains(type2, Type.CONT);
 
 		// decide which branch affects the downstream state
 		if (cont1 && cont2) {
@@ -499,7 +499,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 			s.overwrite(s2);
 		}
 
-		return UnionType.union(type1, type2);
+		return UnionType.Companion.union(type1, type2);
 	}
 
 	@NotNull
@@ -518,7 +518,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 		} else {
 			type2 = Type.CONT;
 		}
-		return UnionType.union(type1, type2);
+		return UnionType.Companion.union(type1, type2);
 	}
 
 	@NotNull
@@ -777,8 +777,8 @@ public class TypeInferencer implements Visitor1<Type, State> {
 
 		if (vt instanceof UnionType) {
 			Type retType = Type.UNKNOWN;
-			for (Type t : ((UnionType) vt).types) {
-				retType = UnionType.union(retType, getSubscript(node, t, st, s));
+			for (Type t : ((UnionType) vt).getTypes()) {
+				retType = UnionType.Companion.union(retType, getSubscript(node, t, st, s));
 			}
 			return retType;
 		} else {
@@ -796,7 +796,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 
 		if (node.handlers != null) {
 			for (Handler h : node.handlers) {
-				tph = UnionType.union(tph, visit(h, s));
+				tph = UnionType.Companion.union(tph, visit(h, s));
 			}
 		}
 
@@ -854,7 +854,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 		}
 
 		if (node.orelse != null) {
-			t = UnionType.union(t, visit(node.orelse, s));
+			t = UnionType.Companion.union(t, visit(node.orelse, s));
 		}
 
 		return t;
@@ -903,7 +903,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 		Type result = Type.UNKNOWN;
 		for (Node node : nodes) {
 			Type nodeType = visit(node, s);
-			result = UnionType.union(result, nodeType);
+			result = UnionType.Companion.union(result, nodeType);
 		}
 		return result;
 	}
@@ -911,7 +911,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 	public void setAttr(Attribute node, State s, @NotNull Type v) {
 		Type targetType = visit(node.target, s);
 		if (targetType instanceof UnionType) {
-			Set<Type> types = ((UnionType) targetType).types;
+			Set<Type> types = ((UnionType) targetType).getTypes();
 			for (Type tp : types) {
 				setAttrType(node, tp, v);
 			}
@@ -1039,7 +1039,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 				}
 			}
 
-			toType = UnionType.remove(toType, Type.CONT);
+			toType = UnionType.Companion.remove(toType, Type.CONT);
 			func.addMapping(fromType, toType);
 			func.setSelfType(null);
 			return toType;
@@ -1100,7 +1100,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 
 		if (restKw != null) {
 			if (hash != null && !hash.isEmpty()) {
-				Type hashType = UnionType.newUnion(hash.values());
+				Type hashType = UnionType.Companion.newUnion(hash.values());
 				bind(
 						funcTable,
 						restKw,
@@ -1209,7 +1209,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 			visit(sub.slice, s);
 			if (valueType instanceof ListType) {
 				ListType t = (ListType) valueType;
-				t.setElementType(UnionType.union(t.eltType, rvalue));
+				t.setElementType(UnionType.Companion.union(t.eltType, rvalue));
 			}
 		} else if (target != null) {
 			Analyzer.self.putProblem(target, "invalid location for assignment");

@@ -61,7 +61,7 @@ public class Outliner {
 			if (nb.kind == Binding.Kind.CLASS) {
 				Type realType = nb.type;
 				if (realType instanceof UnionType) {
-					for (Type t : ((UnionType) realType).types) {
+					for (Type t : ((UnionType) realType).getTypes()) {
 						if (t instanceof ClassType) {
 							realType = t;
 							break;

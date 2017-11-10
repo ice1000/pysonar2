@@ -34,12 +34,11 @@ abstract class Type {
 		private val elements = hashMapOf<Type, Int>()
 		private val used = hashSetOf<Type>()
 
-		fun push(t: Type): Int? {
+		fun push(t: Type): Int {
 			count += 1
 			elements.put(t, count)
 			return count
 		}
-
 
 		fun pop(t: Type) {
 			elements.remove(t)
@@ -51,7 +50,7 @@ abstract class Type {
 	}
 
 	companion object {
-
+		@JvmStatic fun getINT() = INT
 		@JvmField
 		var UNKNOWN = InstanceType(ClassType("?"))
 		@JvmField
@@ -68,6 +67,7 @@ abstract class Type {
 		var COMPLEX = ComplexType()
 		@JvmField
 		var BOOL = BoolType(BoolType.Value.Undecided)
-		protected var typeStack = TypeStack()
+		@JvmField
+		var typeStack = TypeStack()
 	}
 }

@@ -23,8 +23,8 @@ public class ListType extends Type {
 
 	public ListType(Type elt0) {
 		eltType = elt0;
-		getTable().addSuper(Analyzer.self.builtins.BaseList.getTable());
-		getTable().setPath(Analyzer.self.builtins.BaseList.getTable().getPath());
+		getTable().addSuper(Analyzer.self.builtins.getBaseList().getTable());
+		getTable().setPath(Analyzer.self.builtins.getBaseList().getTable().getPath());
 	}
 
 
@@ -34,7 +34,7 @@ public class ListType extends Type {
 
 
 	public void add(@NotNull Type another) {
-		eltType = UnionType.union(eltType, another);
+		eltType = UnionType.Companion.union(eltType, another);
 		positional.add(another);
 	}
 
@@ -67,13 +67,13 @@ public class ListType extends Type {
 
 	@Override
 	public boolean typeEquals(Object other) {
-		if (Companion.getTypeStack().contains(this, other)) {
+		if (typeStack.contains(this, other)) {
 			return true;
 		} else if (other instanceof ListType) {
 			ListType co = (ListType) other;
-			Companion.getTypeStack().push(this, other);
+			typeStack.push(this, other);
 			boolean result = co.eltType.typeEquals(eltType);
-			Companion.getTypeStack().pop(this, other);
+			typeStack.pop(this, other);
 			return result;
 		} else {
 			return false;
