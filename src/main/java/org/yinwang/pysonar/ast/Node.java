@@ -82,15 +82,15 @@ public abstract class Node implements java.io.Serializable, Comparable<Object> {
 		if (this instanceof FunctionDef) {
 			body = ((FunctionDef) this).body;
 		} else if (this instanceof ClassDef) {
-			body = ((ClassDef) this).body;
+			body = ((ClassDef) this).getBody();
 		} else if (this instanceof Module) {
-			body = ((Module) this).body;
+			body = ((Module) this).getBody();
 		}
 
-		if (body instanceof Block && ((Block) body).seq.size() >= 1) {
-			Node firstExpr = ((Block) body).seq.get(0);
+		if (body instanceof Block && ((Block) body).getSeq().size() >= 1) {
+			Node firstExpr = ((Block) body).getSeq().get(0);
 			if (firstExpr instanceof Expr) {
-				Node docstrNode = ((Expr) firstExpr).value;
+				Node docstrNode = ((Expr) firstExpr).getValue();
 				if (docstrNode != null && docstrNode instanceof Str) {
 					return (Str) docstrNode;
 				}

@@ -660,16 +660,16 @@ public class Parser {
 	private void locateNames(List<Alias> names, int start) {
 		for (Alias a : names) {
 			Name first = a.name.get(0);
-			start = content.indexOf(first.id, start);
+			start = content.indexOf(first.getId(), start);
 			first.start = start;
-			first.end = start + first.id.length();
+			first.end = start + first.getId().length();
 			start = first.end;
-			if (a.asname != null) {
-				start = content.indexOf(a.asname.id, start);
-				a.asname.start = start;
-				a.asname.end = start + a.asname.id.length();
-				a.asname.file = file;  // file is missing for asname node
-				start = a.asname.end;
+			if (a.getAsname() != null) {
+				start = content.indexOf(a.getAsname().getId(), start);
+				a.getAsname().start = start;
+				a.getAsname().end = start + a.getAsname().getId().length();
+				a.getAsname().file = file;  // file is missing for asname node
+				start = a.getAsname().end;
 			}
 		}
 	}

@@ -355,10 +355,10 @@ public class Analyzer {
 		String ret = "";
 
 		for (int i = 0; i < names.size() - 1; i++) {
-			ret += names.get(i).id + ".";
+			ret += names.get(i).getId() + ".";
 		}
 
-		ret += names.get(names.size() - 1).id;
+		ret += names.get(names.size() - 1).getId();
 		return ret;
 	}
 
@@ -399,7 +399,7 @@ public class Analyzer {
 
 		Type mt = getBuiltinModule(qname);
 		if (mt != null) {
-			state.insert(name.get(0).id,
+			state.insert(name.get(0).getId(),
 					new Url(Builtins.Companion.getLIBRARY_URL() + mt.getTable().getPath() + ".html"),
 					mt, Binding.Kind.SCOPE);
 			return mt;
@@ -408,7 +408,7 @@ public class Analyzer {
 		// If there are more than one segment
 		// load the packages first
 		Type prev = null;
-		String startPath = locateModule(name.get(0).id);
+		String startPath = locateModule(name.get(0).getId());
 
 		if (startPath == null) {
 			return null;
@@ -417,7 +417,7 @@ public class Analyzer {
 		File path = new File(startPath);
 
 		for (int i = 0; i < name.size(); i++) {
-			path = new File(path, name.get(i).id);
+			path = new File(path, name.get(i).getId());
 			File initFile = new File($.joinPath(path, "__init__.py").getPath());
 
 			if (initFile.exists()) {
@@ -427,9 +427,9 @@ public class Analyzer {
 				}
 
 				if (prev != null) {
-					prev.getTable().insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+					prev.getTable().insert(name.get(i).getId(), name.get(i), mod, Binding.Kind.VARIABLE);
 				} else {
-					state.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+					state.insert(name.get(i).getId(), name.get(i), mod, Binding.Kind.VARIABLE);
 				}
 
 				prev = mod;
@@ -442,9 +442,9 @@ public class Analyzer {
 						return null;
 					}
 					if (prev != null) {
-						prev.getTable().insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+						prev.getTable().insert(name.get(i).getId(), name.get(i), mod, Binding.Kind.VARIABLE);
 					} else {
-						state.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+						state.insert(name.get(i).getId(), name.get(i), mod, Binding.Kind.VARIABLE);
 					}
 					prev = mod;
 				} else {
