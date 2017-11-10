@@ -79,7 +79,7 @@ class StyleApplier {
 	}
 
 	private String toCSS(@NotNull Style style) {
-		return style.type.toString().toLowerCase().replace("_", "-");
+		return style.getType().toString().toLowerCase().replace("_", "-");
 	}
 
 	abstract class Tag implements Comparable<Tag> {
@@ -112,7 +112,7 @@ class StyleApplier {
 
 	class StartTag extends Tag {
 		public StartTag(@NotNull Style style) {
-			offset = style.start;
+			offset = style.getStart();
 			this.style = style;
 		}
 
@@ -121,20 +121,20 @@ class StyleApplier {
 		void insert() {
 			super.insert();
 			if (Analyzer.self.hasOption("debug")) {
-				switch (style.type) {
+				switch (style.getType()) {
 					case ANCHOR:
-						buffer.append("<a name='" + style.url + "'");
-						buffer.append(", id ='" + style.id + "'");
-						if (style.highlight != null && !style.highlight.isEmpty()) {
-							String ids = $.joinWithSep(style.highlight, "\",\"", "\"", "\"");
+						buffer.append("<a name='" + style.getUrl() + "'");
+						buffer.append(", id ='" + style.getId() + "'");
+						if (style.getHighlight() != null && !style.getHighlight().isEmpty()) {
+							String ids = $.joinWithSep(style.getHighlight(), "\",\"", "\"", "\"");
 							buffer.append(", onmouseover='highlight(").append(ids).append(")'");
 						}
 						break;
 					case LINK:
-						buffer.append("<a href='" + style.url + "'");
-						buffer.append(", id ='" + style.id + "'");
-						if (style.highlight != null && !style.highlight.isEmpty()) {
-							String ids = $.joinWithSep(style.highlight, "\",\"", "\"", "\"");
+						buffer.append("<a href='" + style.getUrl() + "'");
+						buffer.append(", id ='" + style.getId() + "'");
+						if (style.getHighlight() != null && !style.getHighlight().isEmpty()) {
+							String ids = $.joinWithSep(style.getHighlight(), "\",\"", "\"", "\"");
 							buffer.append(", onmouseover='highlight(").append(ids).append(")'");
 						}
 						break;
@@ -144,14 +144,14 @@ class StyleApplier {
 						break;
 				}
 			} else {
-				switch (style.type) {
+				switch (style.getType()) {
 					case ANCHOR:
-						buffer.append("<a name='" + style.url + "'");
-						buffer.append(", xid ='" + style.id + "'");
+						buffer.append("<a name='" + style.getUrl() + "'");
+						buffer.append(", xid ='" + style.getId() + "'");
 						break;
 					case LINK:
-						buffer.append("<a href='" + style.url + "'");
-						buffer.append(", xid ='" + style.id + "'");
+						buffer.append("<a href='" + style.getUrl() + "'");
+						buffer.append(", xid ='" + style.getId() + "'");
 						break;
 					default:
 						buffer.append("<span class='");
@@ -159,9 +159,9 @@ class StyleApplier {
 						break;
 				}
 			}
-			if (style.message != null) {
+			if (style.getMessage() != null) {
 				buffer.append(", title='");
-				buffer.append(style.message);
+				buffer.append(style.getMessage());
 				buffer.append("'");
 			}
 			buffer.append(">");
@@ -170,7 +170,7 @@ class StyleApplier {
 
 	class EndTag extends Tag {
 		public EndTag(@NotNull Style style) {
-			offset = style.end;
+			offset = style.getEnd();
 			this.style = style;
 		}
 
@@ -178,7 +178,7 @@ class StyleApplier {
 		@Override
 		void insert() {
 			super.insert();
-			switch (style.type) {
+			switch (style.getType()) {
 				case ANCHOR:
 				case LINK:
 					buffer.append("</a>");

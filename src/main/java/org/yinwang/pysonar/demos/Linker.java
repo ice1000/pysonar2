@@ -91,9 +91,9 @@ class Linker {
 
 		List<Type> types = bindings.stream().map(b -> b.type).collect(Collectors.toList());
 		Style style = new Style(Style.Type.ANCHOR, first.start, first.end);
-		style.message = UnionType.Companion.union(types).toString();
-		style.url = first.qname;
-		style.id = qname;
+		style.setMessage(UnionType.Companion.union(types).toString());
+		style.setUrl(first.qname);
+		style.setId(qname);
 		addFileStyle(first.getFile(), style);
 	}
 
@@ -107,16 +107,16 @@ class Linker {
 
 		seenDef.add(hash);
 		Style style = new Style(Style.Type.ANCHOR, binding.start, binding.end);
-		style.message = binding.type.toString();
-		style.url = binding.qname;
-		style.id = "" + Math.abs(binding.hashCode());
+		style.setMessage(binding.type.toString());
+		style.setUrl(binding.qname);
+		style.setId("" + Math.abs(binding.hashCode()));
 
 		Set<Node> refs = binding.refs;
-		style.highlight = new ArrayList<>();
+		style.setHighlight(new ArrayList<>());
 
 
 		for (Node r : refs) {
-			style.highlight.add(Integer.toString(Math.abs(r.hashCode())));
+			style.getHighlight().add(Integer.toString(Math.abs(r.hashCode())));
 		}
 		addFileStyle(binding.getFile(), style);
 	}
@@ -130,21 +130,21 @@ class Linker {
 			seenRef.add(hash);
 
 			Style link = new Style(Style.Type.LINK, ref.start, ref.end);
-			link.id = qname;
+			link.setId(qname);
 
 			List<Type> types = bindings.stream().map(b -> b.type).collect(Collectors.toList());
-			link.message = UnionType.Companion.union(types).toString();
+			link.setMessage(UnionType.Companion.union(types).toString());
 
 			// Currently jump to the first binding only. Should change to have a
 			// hover menu or something later.
 			String path = ref.file;
 			if (path != null) {
 				for (Binding b : bindings) {
-					if (link.url == null) {
-						link.url = toURL(b, path);
+					if (link.getUrl() == null) {
+						link.setUrl(toURL(b, path));
 					}
 
-					if (link.url != null) {
+					if (link.getUrl() != null) {
 						addFileStyle(path, link);
 						break;
 					}
@@ -161,17 +161,17 @@ class Linker {
 			seenRef.add(hash);
 
 			Style link = new Style(Style.Type.LINK, ref.start, ref.end);
-			link.id = Integer.toString(Math.abs(hash));
+			link.setId(Integer.toString(Math.abs(hash)));
 
 			List<String> typings = new ArrayList<>();
 			for (Binding b : bindings) {
 				typings.add(b.type.toString());
 			}
-			link.message = $.joinWithSep(typings, " | ", "{", "}");
+			link.setMessage($.joinWithSep(typings, " | ", "{", "}"));
 
-			link.highlight = new ArrayList<>();
+			link.setHighlight(new ArrayList<>());
 			for (Binding b : bindings) {
-				link.highlight.add(Integer.toString(Math.abs(b.hashCode())));
+				link.getHighlight().add(Integer.toString(Math.abs(b.hashCode())));
 			}
 
 			// Currently jump to the first binding only. Should change to have a
@@ -179,11 +179,11 @@ class Linker {
 			String path = ref.file;
 			if (path != null) {
 				for (Binding b : bindings) {
-					if (link.url == null) {
-						link.url = toURL(b, path);
+					if (link.getUrl() == null) {
+						link.setUrl(toURL(b, path));
 					}
 
-					if (link.url != null) {
+					if (link.getUrl() != null) {
 						addFileStyle(path, link);
 						break;
 					}
@@ -254,8 +254,8 @@ class Linker {
 
 	private void processDiagnostic(@NotNull Diagnostic d) {
 		Style style = new Style(Style.Type.WARNING, d.getStart(), d.getEnd());
-		style.message = d.getMsg();
-		style.url = d.getFile();
+		style.setMessage(d.getMsg());
+		style.setUrl(d.getFile());
 		addFileStyle(d.getFile(), style);
 	}
 
