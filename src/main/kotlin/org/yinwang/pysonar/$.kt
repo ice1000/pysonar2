@@ -255,15 +255,15 @@ fun testmsg(m: String) {
 }
 
 @JvmOverloads
-fun die(msg: String, e: Exception? = null) {
+fun die(msg: String, e: Exception? = null): Nothing {
 	System.err.println(msg)
 
-	if (e != null) {
-		System.err.println("Exception: " + e + "\n")
-	}
+	if (e != null) System.err.println("Exception: " + e + "\n")
 
 	Thread.dumpStack()
 	System.exit(2)
+	@Suppress("UNREACHABLE_CODE")
+	return throw Exception("")
 }
 
 fun readWholeFile(filename: String): String? = try {

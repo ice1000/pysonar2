@@ -98,7 +98,7 @@ class State {
 	// create new binding and insert
 	fun insert(id: String, node: Node, type: Type, kind: Binding.Kind) {
 		val b = Binding(id, node, type, kind)
-		b.setQname(if (type is ModuleType) type.asModuleType().qname!! else extendPath(id))
+		b.setQname((type as? ModuleType)?.asModuleType()?.qname ?: extendPath(id))
 		update(id, b)
 	}
 

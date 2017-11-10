@@ -400,7 +400,7 @@ public class Analyzer {
 		Type mt = getBuiltinModule(qname);
 		if (mt != null) {
 			state.insert(name.get(0).id,
-					new Url(Builtins.LIBRARY_URL + mt.table.getPath() + ".html"),
+					new Url(Builtins.LIBRARY_URL + mt.getTable().getPath() + ".html"),
 					mt, Binding.Kind.SCOPE);
 			return mt;
 		}
@@ -427,7 +427,7 @@ public class Analyzer {
 				}
 
 				if (prev != null) {
-					prev.table.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+					prev.getTable().insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
 				} else {
 					state.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
 				}
@@ -442,7 +442,7 @@ public class Analyzer {
 						return null;
 					}
 					if (prev != null) {
-						prev.table.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
+						prev.getTable().insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
 					} else {
 						state.insert(name.get(i).id, name.get(i), mod, Binding.Kind.VARIABLE);
 					}

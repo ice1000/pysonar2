@@ -15,7 +15,7 @@ class ModuleType(var name: String, file: String?, parent: State) : Type() {
 			qname_ = moduleQname(file)
 		}
 		qname = qname_ ?: name
-		setTable(State(parent, State.StateType.MODULE))
+		table = State(parent, State.StateType.MODULE)
 		table.path = qname
 		table.type = this
 
@@ -27,10 +27,10 @@ class ModuleType(var name: String, file: String?, parent: State) : Type() {
 
 	override fun hashCode(): Int = "ModuleType".hashCode()
 
-	override fun typeEquals(other: Any): Boolean {
+	override fun typeEquals(other: Any?): Boolean {
 		if (other is ModuleType && file != null) return file == other.file
 		return this === other
 	}
 
-	override fun printType(ctr: Type.CyclicTypeRecorder): String = name
+	override fun printType(ctr: Type.CyclicTypeRecorder) = name
 }

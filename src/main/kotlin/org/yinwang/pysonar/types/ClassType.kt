@@ -2,7 +2,7 @@ package org.yinwang.pysonar.types
 
 import org.yinwang.pysonar.State
 
-class ClassType(var name: String, parent: State?) : Type() {
+class ClassType(var name: String, parent: State? = null) : Type() {
 	var canon: InstanceType? = null
 		get() {
 			if (field == null)
@@ -13,12 +13,12 @@ class ClassType(var name: String, parent: State?) : Type() {
 	var superclass: Type? = null
 
 	init {
-		this.setTable(State(parent, State.StateType.CLASS))
+		table = State(parent, State.StateType.CLASS)
 		table.type = this
 		if (parent != null) table.path = parent.extendPath(name) else table.path = name
 	}
 
-	constructor(name: String, parent: State, superClass: ClassType?) : this(name, parent) {
+	constructor(name: String, parent: State? = null, superClass: ClassType? = null) : this(name, parent) {
 		if (superClass != null) addSuper(superClass)
 	}
 
@@ -27,13 +27,7 @@ class ClassType(var name: String, parent: State?) : Type() {
 		table.addSuper(superclass.table)
 	}
 
-	override fun typeEquals(other: Any): Boolean {
-		return if (other is ClassType) {
-			canon === other.canon
-		} else {
-			false
-		}
-	}
+	override fun typeEquals(other: Any?) = if (other is ClassType) canon === other.canon else false
 
 	override fun printType(ctr: Type.CyclicTypeRecorder): String {
 		val sb = StringBuilder()

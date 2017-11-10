@@ -37,8 +37,8 @@ public class FunType extends Type {
 
 	public FunType(Type from, Type to) {
 		addMapping(from, to);
-		table.addSuper(Analyzer.self.builtins.BaseFunction.table);
-		table.setPath(Analyzer.self.builtins.BaseFunction.table.getPath());
+		getTable().addSuper(Analyzer.self.builtins.BaseFunction.getTable());
+		getTable().setPath(Analyzer.self.builtins.BaseFunction.getTable().getPath());
 	}
 
 
@@ -72,7 +72,7 @@ public class FunType extends Type {
 		if (!arrows.isEmpty()) {
 			return arrows.values().iterator().next();
 		} else {
-			return Type.UNKNOWN;
+			return Type.Companion.getUNKNOWN();
 		}
 	}
 
@@ -96,7 +96,7 @@ public class FunType extends Type {
 	public boolean typeEquals(Object other) {
 		if (other instanceof FunType) {
 			FunType fo = (FunType) other;
-			return fo.table.getPath().equals(table.getPath()) || this == other;
+			return fo.getTable().getPath().equals(getTable().getPath()) || this == other;
 		} else {
 			return false;
 		}
@@ -115,11 +115,11 @@ public class FunType extends Type {
 
 
 	private boolean subsumedInner(Type type1, Type type2) {
-		if (typeStack.contains(type1, type2)) {
+		if (Companion.getTypeStack().contains(type1, type2)) {
 			return true;
 		}
 
-		if (type1.isUnknownType() || type1 == Type.NONE || type1.equals(type2)) {
+		if (type1.isUnknownType() || type1 == Type.Companion.getNONE() || type1.equals(type2)) {
 			return true;
 		}
 

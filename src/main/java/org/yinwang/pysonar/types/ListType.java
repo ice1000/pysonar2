@@ -23,8 +23,8 @@ public class ListType extends Type {
 
 	public ListType(Type elt0) {
 		eltType = elt0;
-		table.addSuper(Analyzer.self.builtins.BaseList.table);
-		table.setPath(Analyzer.self.builtins.BaseList.table.getPath());
+		getTable().addSuper(Analyzer.self.builtins.BaseList.getTable());
+		getTable().setPath(Analyzer.self.builtins.BaseList.getTable().getPath());
 	}
 
 
@@ -67,13 +67,13 @@ public class ListType extends Type {
 
 	@Override
 	public boolean typeEquals(Object other) {
-		if (typeStack.contains(this, other)) {
+		if (Companion.getTypeStack().contains(this, other)) {
 			return true;
 		} else if (other instanceof ListType) {
 			ListType co = (ListType) other;
-			typeStack.push(this, other);
+			Companion.getTypeStack().push(this, other);
 			boolean result = co.eltType.typeEquals(eltType);
-			typeStack.pop(this, other);
+			Companion.getTypeStack().pop(this, other);
 			return result;
 		} else {
 			return false;
@@ -88,7 +88,7 @@ public class ListType extends Type {
 
 
 	@Override
-	protected String printType(@NotNull CyclicTypeRecorder ctr) {
+	public String printType(@NotNull CyclicTypeRecorder ctr) {
 		StringBuilder sb = new StringBuilder();
 
 		Integer num = ctr.visit(this);

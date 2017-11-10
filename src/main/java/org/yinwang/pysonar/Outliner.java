@@ -32,7 +32,7 @@ public class Outliner {
 		if (mt == null) {
 			return new ArrayList<>();
 		}
-		return generate(mt.table, abspath);
+		return generate(mt.getTable(), abspath);
 	}
 
 	/**
@@ -68,7 +68,7 @@ public class Outliner {
 						}
 					}
 				}
-				kids = generate(realType.table, path);
+				kids = generate(realType.getTable(), path);
 			}
 
 			Entry kid = kids != null ? new Branch() : new Leaf();

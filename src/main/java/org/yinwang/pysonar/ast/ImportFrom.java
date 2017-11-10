@@ -32,17 +32,17 @@ public class ImportFrom extends Node {
 	}
 
 	public void importStar(@NotNull State s, @Nullable Type mt) {
-		if (mt == null || mt.file == null) {
+		if (mt == null || mt.getFile() == null) {
 			return;
 		}
 
-		Node node = Analyzer.self.getAstForFile(mt.file);
+		Node node = Analyzer.self.getAstForFile(mt.getFile());
 		if (node == null) {
 			return;
 		}
 
 		List<String> names = new ArrayList<>();
-		Type allType = mt.table.lookupType("__all__");
+		Type allType = mt.getTable().lookupType("__all__");
 
 		if (allType != null && allType instanceof ListType) {
 			ListType lt = (ListType) allType;
@@ -58,7 +58,7 @@ public class ImportFrom extends Node {
 			int start = this.start;
 
 			for (String name : names) {
-				Set<Binding> b = mt.table.lookupLocal(name);
+				Set<Binding> b = mt.getTable().lookupLocal(name);
 				if (b != null) {
 					s.update(name, b);
 				} else {
@@ -74,7 +74,7 @@ public class ImportFrom extends Node {
 			}
 		} else {
 			// Fall back to importing all names not starting with "_".
-			for (Entry<String, Set<Binding>> e : mt.table.entrySet()) {
+			for (Entry<String, Set<Binding>> e : mt.getTable().entrySet()) {
 				if (!e.getKey().startsWith("_")) {
 					s.update(e.getKey(), e.getValue());
 				}

@@ -29,7 +29,7 @@ class Options(args: Array<String>) {
 		}
 	}
 
-	operator fun get(key: String): Any = optionsMap[key]!!
+	operator fun get(key: String): Any = optionsMap[key] ?: die("$key not found.")
 
 	fun hasOption(key: String): Boolean {
 		val v = optionsMap[key]

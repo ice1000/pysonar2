@@ -253,10 +253,10 @@ class Linker {
 
 
 	private void processDiagnostic(@NotNull Diagnostic d) {
-		Style style = new Style(Style.Type.WARNING, d.start, d.end);
-		style.message = d.msg;
-		style.url = d.file;
-		addFileStyle(d.file, style);
+		Style style = new Style(Style.Type.WARNING, d.getStart(), d.getEnd());
+		style.message = d.getMsg();
+		style.url = d.getFile();
+		addFileStyle(d.getFile(), style);
 	}
 
 
@@ -269,7 +269,7 @@ class Linker {
 
 		String destPath;
 		if (binding.type instanceof ModuleType) {
-			destPath = binding.type.asModuleType().file;
+			destPath = binding.type.asModuleType().getFile();
 		} else {
 			destPath = binding.getFile();
 		}

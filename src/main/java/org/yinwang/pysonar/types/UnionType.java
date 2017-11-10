@@ -121,7 +121,7 @@ public class UnionType extends Type {
 
 	@Override
 	public boolean typeEquals(Object other) {
-		if (typeStack.contains(this, other)) {
+		if (Companion.getTypeStack().contains(this, other)) {
 			return true;
 		} else if (other instanceof UnionType) {
 			Set<Type> types1 = types;
@@ -154,7 +154,7 @@ public class UnionType extends Type {
 
 
 	@Override
-	protected String printType(@NotNull CyclicTypeRecorder ctr) {
+	public String printType(@NotNull CyclicTypeRecorder ctr) {
 		StringBuilder sb = new StringBuilder();
 
 		Integer num = ctr.visit(this);

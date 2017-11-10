@@ -22,7 +22,7 @@ class InstanceType(var classType: Type) : Type() {
 		}
 	}
 
-	override fun typeEquals(other: Any): Boolean {
+	override fun typeEquals(other: Any?): Boolean {
 		return if (other is InstanceType) {
 			classType.typeEquals(other.classType)
 		} else false

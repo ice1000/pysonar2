@@ -15,8 +15,8 @@ import static org.yinwang.pysonar.Binding.Kind.CLASS;
 public class TypeInferencer implements Visitor1<Type, State> {
 
 	static void bindMethodAttrs(@NotNull FunType cl) {
-		if (cl.table.getParent() != null) {
-			Type cls = cl.table.getParent().getType();
+		if (cl.getTable().getParent() != null) {
+			Type cls = cl.getTable().getParent().getType();
 			if (cls != null && cls instanceof ClassType) {
 				addReadOnlyAttr(cl, "im_class", cls, CLASS);
 				addReadOnlyAttr(cl, "__class__", cls, CLASS);
@@ -33,7 +33,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 			Binding.Kind kind) {
 		Node loc = Builtins.newDataModelUrl("the-standard-type-hierarchy");
 		Binding b = new Binding(name, loc, type, kind);
-		fun.table.update(name, b);
+		fun.getTable().update(name, b);
 		b.markSynthetic();
 		b.markStatic();
 	}
@@ -163,7 +163,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 
 	private boolean operatorOverridden(Type type, String method) {
 		if (type instanceof InstanceType) {
-			Type opType = type.table.lookupAttrType(method);
+			Type opType = type.getTable().lookupAttrType(method);
 			if (opType != null) {
 				return true;
 			}
@@ -173,7 +173,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 
 	@Nullable
 	private Type applyOp(Op op, Type ltype, Type rtype, String method, Node node, Node left) {
-		Type opType = ltype.table.lookupAttrType(method);
+		Type opType = ltype.getTable().lookupAttrType(method);
 		if (opType instanceof FunType) {
 			((FunType) opType).setSelfType(ltype);
 			return apply((FunType) opType, Collections.singletonList(rtype), null, null, null, node);
@@ -278,18 +278,18 @@ public class TypeInferencer implements Visitor1<Type, State> {
 
 		// XXX: Not sure if we should add "bases", "name" and "dict" here. They
 		// must be added _somewhere_ but I'm just not sure if it should be HERE.
-		node.addSpecialAttribute(classType.table, "__bases__", new TupleType(baseTypes));
-		node.addSpecialAttribute(classType.table, "__name__", Type.STR);
-		node.addSpecialAttribute(classType.table, "__dict__",
+		node.addSpecialAttribute(classType.getTable(), "__bases__", new TupleType(baseTypes));
+		node.addSpecialAttribute(classType.getTable(), "__name__", Type.STR);
+		node.addSpecialAttribute(classType.getTable(), "__dict__",
 				new DictType(Type.STR, Type.UNKNOWN));
-		node.addSpecialAttribute(classType.table, "__module__", Type.STR);
-		node.addSpecialAttribute(classType.table, "__doc__", Type.STR);
+		node.addSpecialAttribute(classType.getTable(), "__module__", Type.STR);
+		node.addSpecialAttribute(classType.getTable(), "__doc__", Type.STR);
 
 		// Bind ClassType to name here before resolving the body because the
 		// methods need node type as self.
 		bind(s, node.name, classType, Binding.Kind.CLASS);
 		if (node.body != null) {
-			visit(node.body, classType.table);
+			visit(node.body, classType.getTable());
 		}
 		return Type.CONT;
 	}
@@ -405,8 +405,8 @@ public class TypeInferencer implements Visitor1<Type, State> {
 	public Type visit(FunctionDef node, State s) {
 		State env = s.getForwarding();
 		FunType fun = new FunType(node, env);
-		fun.table.setParent(s);
-		fun.table.setPath(s.extendPath(node.name.id));
+		fun.getTable().setParent(s);
+		fun.getTable().setPath(s.extendPath(node.name.id));
 		fun.setDefaultTypes(visit(node.defaults, s));
 		Analyzer.self.addUncalled(fun);
 		Binding.Kind funkind;
@@ -551,7 +551,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 		} else {
 			for (Alias a : node.names) {
 				Name first = a.name.get(0);
-				Set<Binding> bs = mod.table.lookup(first.id);
+				Set<Binding> bs = mod.getTable().lookup(first.id);
 				if (bs != null) {
 					if (a.asname != null) {
 						s.update(a.asname.id, bs);
@@ -603,7 +603,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 		ModuleType mt = new ModuleType(node.name, node.file, Analyzer.self.globaltable);
 		s.insert($.moduleQname(node.file), node, mt, Binding.Kind.MODULE);
 		if (node.body != null) {
-			visit(node.body, mt.table);
+			visit(node.body, mt.getTable());
 		}
 		return mt;
 	}
@@ -623,7 +623,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 			Analyzer.self.putProblem(node, "unbound variable " + node.id);
 			Analyzer.self.unresolved.add(node);
 			Type t = Type.UNKNOWN;
-			t.table.setPath(s.extendPath(node.id));
+			t.getTable().setPath(s.extendPath(node.id));
 			return t;
 		}
 	}
@@ -935,20 +935,20 @@ public class TypeInferencer implements Visitor1<Type, State> {
 			Analyzer.self.putProblem(node, "Can't set attribute for UnknownType");
 			return;
 		}
-		Set<Binding> bs = targetType.table.lookupAttr(node.attr.id);
+		Set<Binding> bs = targetType.getTable().lookupAttr(node.attr.id);
 		if (bs != null) {
 			addRef(node, targetType, bs);
 		}
 
-		targetType.table.insert(node.attr.id, node.attr, v, ATTRIBUTE);
+		targetType.getTable().insert(node.attr.id, node.attr, v, ATTRIBUTE);
 	}
 
 	public Type getAttrType(Attribute node, @NotNull Type targetType) {
-		Set<Binding> bs = targetType.table.lookupAttr(node.attr.id);
+		Set<Binding> bs = targetType.getTable().lookupAttr(node.attr.id);
 		if (bs == null) {
 			Analyzer.self.putProblem(node.attr, "attribute not found in type: " + targetType);
 			Type t = Type.UNKNOWN;
-			t.table.setPath(targetType.table.extendPath(node.attr.id));
+			t.getTable().setPath(targetType.getTable().extendPath(node.attr.id));
 			return t;
 		} else {
 			addRef(node, targetType, bs);
@@ -1010,8 +1010,8 @@ public class TypeInferencer implements Visitor1<Type, State> {
 
 		State funcTable = new State(func.env, State.StateType.FUNCTION);
 
-		if (func.table.getParent() != null) {
-			funcTable.setPath(func.table.getParent().extendPath(func.func.name.id));
+		if (func.getTable().getParent() != null) {
+			funcTable.setPath(func.getTable().getParent().extendPath(func.func.name.id));
 		} else {
 			funcTable.setPath(func.func.name.id);
 		}
@@ -1047,17 +1047,18 @@ public class TypeInferencer implements Visitor1<Type, State> {
 	}
 
 	@NotNull
-	private Type bindParams(@Nullable Node call,
-	                        @NotNull FunctionDef func,
-	                        @NotNull State funcTable,
-	                        @Nullable List<Node> args,
-	                        @Nullable Name rest,
-	                        @Nullable Name restKw,
-	                        @Nullable List<Type> pTypes,
-	                        @Nullable List<Type> dTypes,
-	                        @Nullable Map<String, Type> hash,
-	                        @Nullable Type kw,
-	                        @Nullable Type star) {
+	private Type bindParams(
+			@Nullable Node call,
+			@NotNull FunctionDef func,
+			@NotNull State funcTable,
+			@Nullable List<Node> args,
+			@Nullable Name rest,
+			@Nullable Name restKw,
+			@Nullable List<Type> pTypes,
+			@Nullable List<Type> dTypes,
+			@Nullable Map<String, Type> hash,
+			@Nullable Type kw,
+			@Nullable Type star) {
 		TupleType fromType = new TupleType();
 		int pSize = args == null ? 0 : args.size();
 		int aSize = pTypes == null ? 0 : pTypes.size();
@@ -1177,7 +1178,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 			} else if (st == null || st.isNumType()) {
 				return ((ListType) vt).eltType;
 			} else {
-				Type sliceFunc = vt.table.lookupAttrType("__getslice__");
+				Type sliceFunc = vt.getTable().lookupAttrType("__getslice__");
 				if (sliceFunc == null) {
 					addError(node, "The type can't be sliced: " + vt);
 					return Type.UNKNOWN;
@@ -1269,7 +1270,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 		} else if (iterType instanceof TupleType) {
 			bind(s, target, ((TupleType) iterType).toListType().eltType, kind);
 		} else {
-			Set<Binding> ents = iterType.table.lookupAttr("__iter__");
+			Set<Binding> ents = iterType.getTable().lookupAttr("__iter__");
 			if (ents != null) {
 				for (Binding ent : ents) {
 					if (ent == null || !(ent.type instanceof FunType)) {
