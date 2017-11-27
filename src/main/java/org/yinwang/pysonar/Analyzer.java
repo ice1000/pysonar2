@@ -539,7 +539,7 @@ public class Analyzer {
 
 
 	public void addUncalled(@NotNull FunType cl) {
-		if (!cl.func.called) {
+		if (!cl.func.getCalled()) {
 			uncalled.add(cl);
 		}
 	}

@@ -377,7 +377,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 	@NotNull
 	@Override
 	public Type visit(ExtSlice node, State s) {
-		for (Node d : node.dims) {
+		for (Node d : node.getDims()) {
 			visit(d, s);
 		}
 		return new ListType();
@@ -386,16 +386,16 @@ public class TypeInferencer implements Visitor1<Type, State> {
 	@NotNull
 	@Override
 	public Type visit(For node, State s) {
-		bindIter(s, node.target, node.iter, Binding.Kind.SCOPE);
+		bindIter(s, node.getTarget(), node.getIter(), Binding.Kind.SCOPE);
 
 		Type ret;
-		if (node.body == null) {
+		if (node.getBody() == null) {
 			ret = Type.UNKNOWN;
 		} else {
-			ret = visit(node.body, s);
+			ret = visit(node.getBody(), s);
 		}
-		if (node.orelse != null) {
-			ret = UnionType.Companion.union(ret, visit(node.orelse, s));
+		if (node.getOrelse() != null) {
+			ret = UnionType.Companion.union(ret, visit(node.getOrelse(), s));
 		}
 		return ret;
 	}
@@ -406,16 +406,16 @@ public class TypeInferencer implements Visitor1<Type, State> {
 		State env = s.getForwarding();
 		FunType fun = new FunType(node, env);
 		fun.getTable().setParent(s);
-		fun.getTable().setPath(s.extendPath(node.name.getId()));
-		fun.setDefaultTypes(visit(node.defaults, s));
+		fun.getTable().setPath(s.extendPath(node.getName().getId()));
+		fun.setDefaultTypes(visit(node.getDefaults(), s));
 		Analyzer.self.addUncalled(fun);
 		Binding.Kind funkind;
 
-		if (node.isLamba) {
+		if (node.getIsLamba()) {
 			return fun;
 		} else {
 			if (s.getStateType() == State.StateType.CLASS) {
-				if ("__init__".equals(node.name.getId())) {
+				if ("__init__".equals(node.getName().getId())) {
 					funkind = Binding.Kind.CONSTRUCTOR;
 				} else {
 					funkind = Binding.Kind.METHOD;
@@ -429,7 +429,7 @@ public class TypeInferencer implements Visitor1<Type, State> {
 				fun.setCls((ClassType) outType);
 			}
 
-			bind(s, node.name, fun, funkind);
+			bind(s, node.getName(), fun, funkind);
 			return Type.CONT;
 		}
 	}
@@ -982,9 +982,9 @@ public class TypeInferencer implements Visitor1<Type, State> {
 	                  @Nullable Node call) {
 		Analyzer.self.removeUncalled(func);
 
-		if (func.func != null && !func.func.called) {
+		if (func.func != null && !func.func.getCalled()) {
 			Analyzer.self.nCalled++;
-			func.func.called = true;
+			func.func.setCalled(true);
 		}
 
 		if (func.func == null) {
@@ -1011,13 +1011,13 @@ public class TypeInferencer implements Visitor1<Type, State> {
 		State funcTable = new State(func.env, State.StateType.FUNCTION);
 
 		if (func.getTable().getParent() != null) {
-			funcTable.setPath(func.getTable().getParent().extendPath(func.func.name.getId()));
+			funcTable.setPath(func.getTable().getParent().extendPath(func.func.getName().getId()));
 		} else {
-			funcTable.setPath(func.func.name.getId());
+			funcTable.setPath(func.func.getName().getId());
 		}
 
-		Type fromType = bindParams(call, func.func, funcTable, func.func.args,
-				func.func.vararg, func.func.kwarg,
+		Type fromType = bindParams(call, func.func, funcTable, func.func.getArgs(),
+				func.func.getVararg(), func.func.getKwarg(),
 				pTypes, func.defaultTypes, hash, kw, star);
 
 		Type cachedTo = func.getMapping(fromType);
@@ -1030,9 +1030,9 @@ public class TypeInferencer implements Visitor1<Type, State> {
 			return Type.UNKNOWN;
 		} else {
 			func.addMapping(fromType, Type.UNKNOWN);
-			Type toType = visit(func.func.body, funcTable);
+			Type toType = visit(func.func.getBody(), funcTable);
 			if (missingReturn(toType)) {
-				Analyzer.self.putProblem(func.func.name, "Function not always return a value");
+				Analyzer.self.putProblem(func.func.getName(), "Function not always return a value");
 
 				if (call != null) {
 					Analyzer.self.putProblem(call, "Call not always return a value");
@@ -1116,10 +1116,10 @@ public class TypeInferencer implements Visitor1<Type, State> {
 
 		if (rest != null) {
 			if (pTypes.size() > pSize) {
-				if (func.afterRest != null) {
-					int nAfter = func.afterRest.size();
+				if (func.getAfterRest() != null) {
+					int nAfter = func.getAfterRest().size();
 					for (int i = 0; i < nAfter; i++) {
-						bind(funcTable, func.afterRest.get(i),
+						bind(funcTable, func.getAfterRest().get(i),
 								pTypes.get(pTypes.size() - nAfter + i),
 								Binding.Kind.PARAMETER);
 					}

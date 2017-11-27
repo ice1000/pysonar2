@@ -6,7 +6,7 @@ group = 'org.yinwang'
 version = 'v2.1.1'
 
 buildscript {
-	ext.kotlin_version = '1.1.51'
+	ext.kotlin_version = '1.1.60'
 	ext.gson_version = '2.2.4'
 	ext.jackson_2_version = '2.2.3'
 
